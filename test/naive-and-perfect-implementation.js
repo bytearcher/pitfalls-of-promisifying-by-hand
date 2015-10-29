@@ -3,6 +3,7 @@ var Q = require('q');
 
 var naiveDeferredRead = require('../naive-deferredRead');
 var perfectDeferredRead = require('../perfect-deferredRead');
+var perfectNativeDeferredRead = require('../perfect-native-deferredRead');
 
 function mockedFsModule(throwError, resolveTwice) {
     return {
@@ -30,7 +31,7 @@ function commonTests(deferredRead) {
 
         deferredRead(fs).then((lines) => {
             // do some stuffs
-        }).fail((e) => {
+        }).catch((e) => {
             // handle error
             done();
         });
@@ -42,7 +43,7 @@ function commonTests(deferredRead) {
         assert.throws(() => {
             deferredRead(fs).then((lines) => {
                 // do some stuffs
-            }).fail((e) => {
+            }).catch((e) => {
                 // handle error
             });
         });
@@ -55,7 +56,11 @@ describe('promisifying by hand', () => {
         commonTests(naiveDeferredRead);
     });
 
-    describe('perfect implementation', () => {
+    describe('perfect A+ implementation', () => {
         commonTests(perfectDeferredRead);
+    });
+
+    describe('perfect native implementation', () => {
+        commonTests(perfectNativeDeferredRead);
     });
 });
